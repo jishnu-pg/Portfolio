@@ -1,0 +1,16 @@
+# Minimal Requirements for Django Portfolio Backend
+# Core dependencies only - uncomment additional packages as needed
+
+# Core Django Framework
+Django==5.2.4
+djangorestframework==3.16.0
+
+# Authentication & Security
+djangorestframework-simplejwt==5.5.0
+PyJWT==2.9.0
+
+# CORS Support
+django-cors-headers==4.7.0
+
+# Image Processing (required for ImageField in models)
+Pillow==11.3.0 

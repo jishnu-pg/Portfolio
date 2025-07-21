@@ -1,0 +1,23 @@
+# Production Requirements for Django Portfolio Backend
+# Install with: pip install -r requirements-prod.txt
+
+# Include minimal requirements
+-r requirements-minimal.txt
+
+# Production Server
+gunicorn==21.2.0
+
+# Static File Serving
+whitenoise==6.6.0
+
+# Environment Variables
+python-decouple==3.8
+
+# Database (PostgreSQL for production)
+psycopg2-binary==2.9.9
+
+# Security
+django-secure==1.0.2
+
+# Monitoring (optional)
+sentry-sdk==1.40.4 

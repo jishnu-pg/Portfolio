@@ -1,0 +1,46 @@
+# Django Portfolio Backend Requirements
+# Core Django Framework
+Django==5.2.4
+djangorestframework==3.16.0
+
+# Authentication & Security
+djangorestframework-simplejwt==5.5.0
+PyJWT==2.9.0
+
+# CORS Support
+django-cors-headers==4.7.0
+
+# Image Processing (for ImageField)
+Pillow==11.3.0
+
+# Database (SQLite is included with Django)
+# For production, consider adding:
+# psycopg2-binary==2.9.9  # PostgreSQL adapter
+
+# Development & Debugging
+django-debug-toolbar==4.3.0  # Optional: for development debugging
+
+# Environment Variables
+python-decouple==3.8  # For managing environment variables
+
+# Production Dependencies (uncomment for production)
+# gunicorn==21.2.0  # WSGI server for production
+# whitenoise==6.6.0  # Static file serving
+
+# Development Dependencies (uncomment for development)
+# ipython==8.18.1  # Enhanced Python shell
+# django-extensions==3.2.3  # Additional Django management commands
+
+# Testing (uncomment for testing)
+# pytest==7.4.3
+# pytest-django==4.7.0
+# factory-boy==3.3.0  # Test data generation
+
+# Code Quality (uncomment for development)
+# black==23.12.1  # Code formatting
+# flake8==7.0.0  # Code linting
+# isort==5.13.2  # Import sorting
+
+# Documentation (uncomment for development)
+# Sphinx==7.2.6  # Documentation generator
+# sphinx-rtd-theme==2.0.0  # Read the Docs theme 

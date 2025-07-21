@@ -1,0 +1,27 @@
+# Development Requirements for Django Portfolio Backend
+# Install with: pip install -r requirements-dev.txt
+
+# Include minimal requirements
+-r requirements-minimal.txt
+
+# Development & Debugging
+django-debug-toolbar==4.3.0
+ipython==8.18.1
+django-extensions==3.2.3
+
+# Environment Variables
+python-decouple==3.8
+
+# Code Quality & Formatting
+black==23.12.1
+flake8==7.0.0
+isort==5.13.2
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+factory-boy==3.3.0
+
+# Documentation
+Sphinx==7.2.6
+sphinx-rtd-theme==2.0.0 
