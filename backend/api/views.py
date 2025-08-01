@@ -21,9 +21,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return context
 
 class BlogViewSet(viewsets.ModelViewSet):
-    queryset = Blog.objects.filter(published=True).order_by('-created_at')
+    queryset = Blog.objects.none()
     serializer_class = BlogSerializer
-    
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated and (user.is_staff or user.is_superuser):
+            return Blog.objects.all().order_by('-created_at')
+        return Blog.objects.filter(published=True).order_by('-created_at')
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
@@ -53,6 +59,16 @@ class ResumeViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        data = request.data.copy()
+        # Allow multiple resumes to be active; do not deactivate others
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
     
     @action(detail=False, methods=['get'])
     def active(self, request):

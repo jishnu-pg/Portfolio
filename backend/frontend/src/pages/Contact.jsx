@@ -194,12 +194,12 @@ const Contact = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">GitHub</p>
                     <a 
-                      href="https://github.com/jishnu" 
+                      href="https://github.com/jishnu-pg" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                     >
-                      github.com/jishnu
+                      github.com/jishnu-pg
                     </a>
                   </div>
                 </div>

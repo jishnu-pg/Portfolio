@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
@@ -98,12 +99,11 @@ class ContactSubmission(models.Model):
     read = models.BooleanField(default=False, help_text="Mark as read")
     responded = models.BooleanField(default=False, help_text="Mark as responded")
     submitted_at = models.DateTimeField(auto_now_add=True)
-
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         ordering = ['-submitted_at']
-
     def __str__(self):
-        return f"{self.name} - {self.subject}"
+        return f"{self.name} - {self.email}"
 
 class Resume(models.Model):
     title = models.CharField(max_length=200, default="Resume")

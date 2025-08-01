@@ -4,11 +4,12 @@ from .models import Project, Blog, ContactSubmission, Skill, Experience, Testimo
 
 class ProjectSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
-    
+    technologies = serializers.SerializerMethodField()
+
     class Meta:
         model = Project
         fields = '__all__'
-    
+
     def get_image_url(self, obj):
         if obj.image:
             request = self.context.get('request')
@@ -19,6 +20,26 @@ class ProjectSerializer(serializers.ModelSerializer):
                     pass
             return f"http://127.0.0.1:8000{settings.MEDIA_URL}{obj.image}"
         return None
+
+    def get_technologies(self, obj):
+        if obj.tech_stack:
+            return [tech.strip() for tech in obj.tech_stack.split(',') if tech.strip()]
+        return []
+
+    def to_internal_value(self, data):
+        # Make a mutable copy
+        data = data.copy()
+        technologies = data.get('technologies')
+        if technologies:
+            if isinstance(technologies, str):
+                import json
+                try:
+                    technologies = json.loads(technologies)
+                except Exception:
+                    technologies = [t.strip() for t in technologies.split(',') if t.strip()]
+            if isinstance(technologies, list):
+                data['tech_stack'] = ', '.join(technologies)
+        return super().to_internal_value(data)
 
 class BlogSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()

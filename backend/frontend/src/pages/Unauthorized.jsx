@@ -2,13 +2,33 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Unauthorized = () => {
+  // Walking avatar animation state
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      // This effect is no longer needed as the walking avatar is removed.
+      // Keeping it here for now, but it will be removed in a subsequent edit.
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      {/* Animated Background Text */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0">
+        {[...Array(10)].map((_, i) => (
+          <span
+            key={i}
+            className={`absolute text-5xl md:text-7xl font-extrabold opacity-10 whitespace-nowrap animate-float${i % 3} text-red-500`}
+            style={{
+              top: `${Math.random() * 90}%`,
+              left: `${Math.random() * 80}%`,
+              animationDuration: `${6 + i % 4}s`,
+              animationDelay: `${i * 0.7}s`,
+            }}
+          >
+            You are not authorized
+          </span>
+        ))}
       </div>
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
@@ -16,10 +36,10 @@ const Unauthorized = () => {
           {/* Main 401 Display */}
           <div className="mb-12">
             <div className="relative">
-              <h1 className="text-[12rem] md:text-[16rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 leading-none select-none">
+              <h1 className="text-[8rem] md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 leading-none select-none">
                 401
               </h1>
-              <div className="absolute inset-0 text-[12rem] md:text-[16rem] font-black text-gray-100 leading-none select-none -z-10">
+              <div className="absolute inset-0 text-[8rem] md:text-[12rem] font-black text-gray-100 leading-none select-none -z-10">
                 401
               </div>
             </div>
@@ -38,11 +58,11 @@ const Unauthorized = () => {
 
           {/* Security Illustration */}
           <div className="mb-12">
-            <div className="relative w-48 h-48 mx-auto">
+            <div className="relative w-40 h-40 mx-auto">
               <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-orange-500 rounded-full animate-pulse"></div>
               <div className="absolute inset-4 bg-white rounded-full flex items-center justify-center">
                 <div className="relative">
-                  <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
@@ -123,7 +143,27 @@ const Unauthorized = () => {
         </div>
       </div>
 
-
+      {/* Keyframes for floating animation */}
+      <style>{`
+        @keyframes float0 {
+          0% { transform: translateY(0); opacity: 0.1; }
+          50% { transform: translateY(-30px); opacity: 0.18; }
+          100% { transform: translateY(0); opacity: 0.1; }
+        }
+        @keyframes float1 {
+          0% { transform: translateY(0); opacity: 0.1; }
+          50% { transform: translateY(30px); opacity: 0.18; }
+          100% { transform: translateY(0); opacity: 0.1; }
+        }
+        @keyframes float2 {
+          0% { transform: translateY(0); opacity: 0.1; }
+          50% { transform: translateY(-20px); opacity: 0.18; }
+          100% { transform: translateY(0); opacity: 0.1; }
+        }
+        .animate-float0 { animation: float0 7s ease-in-out infinite; }
+        .animate-float1 { animation: float1 8s ease-in-out infinite; }
+        .animate-float2 { animation: float2 9s ease-in-out infinite; }
+      `}</style>
     </div>
   );
 };

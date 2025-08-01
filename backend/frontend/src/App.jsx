@@ -41,22 +41,17 @@ export default function App() {
         {/* Admin routes with sidebar */}
         <Route path="/admin/*" element={
           <ProtectedRoute>
-            <>
-              <AdminSidebar onLogout={handleLogoutClick} />
-              <div className="ml-64">
-                <Routes>
-                  <Route path="/" element={<AdminDashboard />} />
-                  <Route path="/dashboard" element={<AdminDashboard />} />
-                  <Route path="/projects" element={<ProjectManager />} />
-                  <Route path="/blogs" element={<BlogManager />} />
-                  <Route path="/skills" element={<SkillManager />} />
-                  <Route path="/experience" element={<ExperienceManager />} />
-                  <Route path="/messages" element={<ContactViewer />} />
-                  <Route path="/testimonials" element={<TestimonialManager />} />
-                  <Route path="/resumes" element={<ResumeManager />} />
-                </Routes>
-              </div>
-            </>
+            <Routes>
+              <Route path="/" element={<AdminDashboard />} />
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/projects" element={<ProjectManager />} />
+              <Route path="/blogs" element={<BlogManager />} />
+              <Route path="/skills" element={<SkillManager />} />
+              <Route path="/experience" element={<ExperienceManager />} />
+              <Route path="/messages" element={<ContactViewer />} />
+              <Route path="/testimonials" element={<TestimonialManager />} />
+              <Route path="/resumes" element={<ResumeManager />} />
+            </Routes>
           </ProtectedRoute>
         } />
         

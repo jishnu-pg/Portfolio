@@ -9,12 +9,11 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
       className="relative inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      type="button"
     >
       {/* Sun Icon */}
       <svg
-        className={`w-5 h-5 text-yellow-500 transition-all duration-300 ${
-          isDarkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
-        }`}
+        className={`w-5 h-5 text-yellow-500 transition-all duration-300 ${isDarkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >
@@ -24,18 +23,14 @@ const ThemeToggle = () => {
           clipRule="evenodd"
         />
       </svg>
-
       {/* Moon Icon */}
       <svg
-        className={`absolute w-5 h-5 text-blue-400 transition-all duration-300 ${
-          isDarkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
-        }`}
+        className={`absolute w-5 h-5 text-blue-400 transition-all duration-300 ${isDarkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'}`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >
         <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
       </svg>
-
       {/* Toggle Animation Ring */}
       <div className="absolute inset-0 rounded-full border-2 border-transparent transition-all duration-300 group-hover:border-blue-500 dark:group-hover:border-blue-400"></div>
     </button>

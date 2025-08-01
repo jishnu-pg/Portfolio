@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ResumeDownload from '../components/ResumeDownload';
 import api from '../utils/axios';
 
 const About = () => {
@@ -108,7 +107,7 @@ const About = () => {
 
         {/* Resume Download Section */}
         <div className="mb-8 sm:mb-12">
-          <ResumeDownload />
+          {/* ResumeDownload removed */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">

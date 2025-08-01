@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/axios';
+import AdminLayout from './AdminLayout';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
-const TestimonialManager = () => {
+const TestimonialManager = ({ onLogout }) => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +19,7 @@ const TestimonialManager = () => {
     featured: false,
     approved: false
   });
+  const [confirm, setConfirm] = useState({ open: false, onConfirm: null, message: '' });
 
   useEffect(() => {
     fetchTestimonials();
@@ -62,19 +65,24 @@ const TestimonialManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this testimonial?')) {
-      try {
-        const token = localStorage.getItem('adminToken');
-        await api.delete(`/testimonials/${id}/`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        });
-        fetchTestimonials();
-      } catch (error) {
-        setError(error.message);
+    setConfirm({
+      open: true,
+      message: 'Are you sure you want to delete this testimonial?',
+      onConfirm: async () => {
+        setConfirm((prev) => ({ ...prev, open: false }));
+        try {
+          const token = localStorage.getItem('adminToken');
+          await api.delete(`/testimonials/${id}/`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          });
+          fetchTestimonials();
+        } catch (error) {
+          setError(error.message);
+        }
       }
-    }
+    });
   };
 
   const handleEdit = (testimonial) => {
@@ -141,268 +149,278 @@ const TestimonialManager = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/admin/dashboard"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200"
-              >
-                ← Back to Dashboard
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Testimonial Manager</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setShowForm(true)}
-                className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors duration-200"
-              >
-                Add New Testimonial
-              </button>
-              <a
-                href="http://127.0.0.1:8000/admin/api/testimonial/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-200"
-              >
-                Django Admin
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-          <div className="flex items-center justify-between">
+    <AdminLayout onLogout={onLogout}>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Testimonials Overview</h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">{testimonials.length} total testimonials</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Testimonial Manager</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">Add, edit, and manage your testimonials</p>
             </div>
-            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{testimonials.length}</div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors shadow-lg font-semibold"
+            >
+              Add New Testimonial
+            </button>
           </div>
-        </div>
 
-        {/* Form Modal */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                  {editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowForm(false);
-                    resetForm();
-                  }}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                >
-                  ✕
-                </button>
+          {/* Testimonials Overview Card */}
+          <div className="relative overflow-hidden rounded-xl mb-6 shadow border border-yellow-100 dark:border-yellow-900 bg-gradient-to-br from-yellow-100 via-orange-100 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 max-w-xs">
+            <div className="flex items-center gap-3 px-4 py-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 via-orange-500 to-indigo-500 shadow">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M17 8a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
               </div>
+              <div className="flex-1">
+                <h2 className="text-base font-bold text-gray-900 dark:text-white mb-0.5 tracking-tight">Testimonials</h2>
+                <p className="text-xs text-gray-600 dark:text-gray-300">{testimonials.length} total</p>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 via-orange-600 to-indigo-600 animate-pulse">
+                  {testimonials.length}
+                </span>
+              </div>
+            </div>
+            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none select-none">
+              <svg width="80" height="40" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="40" cy="20" rx="40" ry="20" fill="url(#cardblobsm)" />
+                <defs>
+                  <radialGradient id="cardblobsm" cx="0.5" cy="0.5" r="0.5" fx="0.5" fy="0.5">
+                    <stop offset="0%" stopColor="#fde68a" />
+                    <stop offset="100%" stopColor="#f59e42" />
+                  </radialGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Position
-                    </label>
-                    <input
-                      type="text"
-                      name="position"
-                      value={formData.position}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Rating *
-                  </label>
-                  <select
-                    name="rating"
-                    value={formData.rating}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
-                  >
-                    <option value={1}>1 Star</option>
-                    <option value={2}>2 Stars</option>
-                    <option value={3}>3 Stars</option>
-                    <option value={4}>4 Stars</option>
-                    <option value={5}>5 Stars</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Testimonial Content *
-                  </label>
-                  <textarea
-                    name="content"
-                    value={formData.content}
-                    onChange={handleInputChange}
-                    required
-                    rows="4"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
-                    placeholder="What did they say about your work?"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      name="featured"
-                      checked={formData.featured}
-                      onChange={handleInputChange}
-                      className="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 dark:border-gray-600"
-                    />
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Featured Testimonial
-                    </label>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      name="approved"
-                      checked={formData.approved}
-                      onChange={handleInputChange}
-                      className="rounded border-gray-300 text-yellow-600 focus:ring-yellow-500 dark:border-gray-600"
-                    />
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Approved
-                    </label>
-                  </div>
-                </div>
-
-                <div className="flex justify-end space-x-3 pt-4">
+          {/* Form Modal */}
+          {showForm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    {editingTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}
+                  </h2>
                   <button
-                    type="button"
                     onClick={() => {
                       setShowForm(false);
                       resetForm();
                     }}
-                    className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
-                  >
-                    {editingTestimonial ? 'Update' : 'Create'} Testimonial
+                    ✕
                   </button>
                 </div>
-              </form>
-            </div>
-          </div>
-        )}
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
-                    <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
-                      {testimonial.name.charAt(0).toUpperCase()}
-                    </span>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Position
+                      </label>
+                      <input
+                        type="text"
+                        name="position"
+                        value={formData.position}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                      />
+                    </div>
                   </div>
+
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</h3>
-                    {testimonial.position && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.position}</p>
-                    )}
-                    {testimonial.company && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.company}</p>
-                    )}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Company
+                    </label>
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                    />
                   </div>
-                </div>
-                <div className="flex space-x-2">
-                  {testimonial.featured && (
-                    <span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 text-xs px-2 py-1 rounded-full">
-                      Featured
-                    </span>
-                  )}
-                  {testimonial.approved && (
-                    <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs px-2 py-1 rounded-full">
-                      Approved
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="text-yellow-400 text-lg mb-3">
-                {renderStars(testimonial.rating)}
-              </div>
-              
-              <p className="text-gray-700 dark:text-gray-300 mb-4 italic line-clamp-4">
-                "{testimonial.content}"
-              </p>
-              
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(testimonial)}
-                  className="flex-1 bg-yellow-600 text-white py-2 px-3 rounded-md hover:bg-yellow-700 transition-colors text-sm"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(testimonial.id)}
-                  className="flex-1 bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition-colors text-sm"
-                >
-                  Delete
-                </button>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Rating *
+                    </label>
+                    <select
+                      name="rating"
+                      value={formData.rating}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                    >
+                      <option value={1}>1 Star</option>
+                      <option value={2}>2 Stars</option>
+                      <option value={3}>3 Stars</option>
+                      <option value={4}>4 Stars</option>
+                      <option value={5}>5 Stars</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Testimonial Content *
+                    </label>
+                    <textarea
+                      name="content"
+                      value={formData.content}
+                      onChange={handleInputChange}
+                      required
+                      rows="4"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                      placeholder="What did they say about your work?"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Featured Toggle */}
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        aria-pressed={formData.featured}
+                        onClick={() => setFormData(prev => ({ ...prev, featured: !prev.featured }))}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 ${formData.featured ? 'bg-yellow-500' : 'bg-gray-300'}`}
+                      >
+                        <span className="sr-only">Toggle Featured</span>
+                        <span
+                          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-300 ${formData.featured ? 'translate-x-5' : 'translate-x-1'}`}
+                        />
+                      </button>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 select-none">
+                        Featured Testimonial
+                      </label>
+                    </div>
+                    {/* Approved Toggle */}
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        aria-pressed={formData.approved}
+                        onClick={() => setFormData(prev => ({ ...prev, approved: !prev.approved }))}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 ${formData.approved ? 'bg-green-500' : 'bg-gray-300'}`}
+                      >
+                        <span className="sr-only">Toggle Approved</span>
+                        <span
+                          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-300 ${formData.approved ? 'translate-x-5' : 'translate-x-1'}`}
+                        />
+                      </button>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 select-none">
+                        Approved
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end space-x-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForm(false);
+                        resetForm();
+                      }}
+                      className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors"
+                    >
+                      {editingTestimonial ? 'Update' : 'Create'} Testimonial
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
-          ))}
-        </div>
+          )}
 
-        {testimonials.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-600 text-6xl mb-4">💬</div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No testimonials yet</h3>
-            <p className="text-gray-600 dark:text-gray-400">Add your first testimonial to get started.</p>
+          {/* Testimonials Table */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div className="overflow-x-auto">
+              {testimonials.length === 0 ? (
+                <div className="px-6 py-8 text-center">
+                  <p className="text-gray-600 dark:text-gray-400">No testimonials yet. Add your first testimonial!</p>
+                </div>
+              ) : (
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Position</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Company</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rating</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Content</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {testimonials.map((testimonial) => (
+                      <tr key={testimonial.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                        <td className="px-6 py-4 whitespace-nowrap text-left font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left text-gray-700 dark:text-gray-300">{testimonial.position}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left text-gray-700 dark:text-gray-300">{testimonial.company}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left text-yellow-500 dark:text-yellow-400">{'★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-left text-gray-600 dark:text-gray-400 max-w-xs truncate">{testimonial.content}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            {testimonial.featured && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Featured</span>
+                            )}
+                            {testimonial.approved && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Approved</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <div className="flex flex-nowrap items-center gap-2 justify-center">
+                            <button
+                              onClick={() => handleEdit(testimonial)}
+                              className="flex items-center px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm shadow-md"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(testimonial.id)}
+                              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm shadow-md"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
+      <ConfirmDeleteModal
+        open={confirm.open}
+        onClose={() => setConfirm((prev) => ({ ...prev, open: false }))}
+        onConfirm={confirm.onConfirm}
+        title="Delete Testimonial"
+        description={confirm.message}
+        confirmText="Delete"
+      />
+    </AdminLayout>
   );
 };
 

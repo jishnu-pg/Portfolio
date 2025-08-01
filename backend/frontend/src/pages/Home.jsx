@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../utils/axios';
+import { motion } from 'framer-motion';
+import { FaDownload } from 'react-icons/fa';
+import confetti from 'canvas-confetti';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -130,20 +133,50 @@ const Home = () => {
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-xl">
               {t('hero.subtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 w-full max-w-md mx-auto lg:mx-0">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2 w-full max-w-md mx-auto lg:mx-0 justify-center items-center">
               <Link 
                 to="/projects" 
-                className="flex-1 text-center bg-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition font-semibold text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="flex-1 text-center bg-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition font-semibold text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400 justify-center items-center mx-auto"
               >
                 {t('projects.viewAll')}
               </Link>
-              <a 
-                href="/resume.pdf" 
-                download 
-                className="flex-1 text-center bg-white border border-gray-300 text-gray-700 px-4 sm:px-6 py-3 rounded-lg shadow-lg hover:bg-gray-50 transition font-semibold text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
+              <motion.a
+                href="/resume.pdf"
+                download
+                whileHover={{ scale: 1.08, boxShadow: '0 0 16px 4px #6366f1', background: 'linear-gradient(90deg, #e0e7ff 0%, #f0f5ff 100%)', color: '#3730a3', borderColor: '#6366f1' }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                className="flex-1 text-center bg-white border border-gray-300 text-gray-700 px-4 sm:px-6 py-3 rounded-lg shadow-lg hover:bg-gray-50 transition font-semibold text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-400 relative overflow-hidden flex items-center justify-center gap-2"
+                style={{ position: 'relative', zIndex: 1 }}
+                onClick={e => {
+                  // Confetti burst
+                  confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#6366f1', '#a5b4fc', '#818cf8', '#f472b6', '#facc15']
+                  });
+                }}
               >
-                {t('hero.downloadResume')}
-              </a>
+                <motion.span
+                  initial={{ rotate: 0 }}
+                  whileHover={{ rotate: 20, scale: 1.2 }}
+                  whileTap={{ rotate: -20, scale: 0.9 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  className="inline-block mr-2"
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <FaDownload size={18} />
+                </motion.span>
+                <span className="relative z-10">Download Resume</span>
+                <motion.span
+                  className="absolute inset-0 rounded-lg pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 0.25 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)' }}
+                />
+              </motion.a>
             </div>
           </div>
           
