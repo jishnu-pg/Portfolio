@@ -43,4 +43,49 @@ python-decouple==3.8  # For managing environment variables
 
 # Documentation (uncomment for development)
 # Sphinx==7.2.6  # Documentation generator
+# sphinx-rtd-theme==2.0.0  # Read the Docs theme
+
+# Additional Dependencies for Enhanced Features
+# These are optional but recommended for full functionality:
+
+# File Upload & Processing
+# python-magic==0.4.27  # File type detection (optional)
+
+# API Documentation
+# drf-yasg==1.21.7  # Swagger/OpenAPI documentation
+
+# Caching (for production)
+# redis==5.0.1  # Redis cache backend
+# django-redis==5.4.0  # Redis cache for Django
+
+# Monitoring & Logging
+# sentry-sdk==1.40.4  # Error tracking and monitoring
+
+# Security Enhancements
+# django-secure==1.0.2  # Security middleware
+# django-ratelimit==4.1.0  # Rate limiting
+
+# Performance Optimization
+# django-compressor==4.4  # CSS/JS compression
+# django-cacheops==8.1.0  # Query caching
+
+# Development Tools
+# django-extensions==3.2.3  # Additional management commands
+# ipython==8.18.1  # Enhanced shell
+# django-debug-toolbar==4.3.0  # Debug toolbar
+
+# Code Quality Tools
+# black==23.12.1  # Code formatting
+# flake8==7.0.0  # Code linting
+# isort==5.13.2  # Import sorting
+# pre-commit==3.6.0  # Git hooks for code quality
+
+# Testing Framework
+# pytest==7.4.3  # Testing framework
+# pytest-django==4.7.0  # Django test integration
+# factory-boy==3.3.0  # Test data generation
+# coverage==7.4.1  # Code coverage
+
+# Documentation
+# Sphinx==7.2.6  # Documentation generator
 # sphinx-rtd-theme==2.0.0  # Read the Docs theme 

@@ -18,6 +18,33 @@ psycopg2-binary==2.9.9
 
 # Security
 django-secure==1.0.2
+django-ratelimit==4.1.0
 
 # Monitoring (optional)
-sentry-sdk==1.40.4 
+sentry-sdk==1.40.4
+
+# Caching
+redis==5.0.1
+django-redis==5.4.0
+
+# Performance Optimization
+django-compressor==4.4
+django-cacheops==8.1.0
+
+# API Documentation
+drf-yasg==1.21.7
+
+# File Upload Security
+python-magic==0.4.27
+
+# SSL/TLS
+django-ssl-redirect==0.1.0
+
+# Health Checks
+django-health-check==3.17.0
+
+# Logging
+structlog==23.2.0
+
+# Compression
+django-compression-middleware==0.3.0 

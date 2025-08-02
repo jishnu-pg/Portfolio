@@ -157,25 +157,63 @@ portfolio/
 │   │   └── urls.py         # API URL patterns
 │   ├── portfolio_backend/  # Django project settings
 │   ├── manage.py           # Django management script
-│   └── requirements.txt    # Python dependencies
+│   ├── requirements.txt    # Python dependencies (comprehensive)
+│   ├── requirements-minimal.txt  # Essential dependencies only
+│   ├── requirements-dev.txt      # Development tools
+│   └── requirements-prod.txt     # Production-ready
 ├── frontend/               # React frontend
 │   ├── src/
 │   │   ├── components/     # Reusable React components
 │   │   │   ├── admin/      # Admin-specific components
-│   │   │   │   └── ResumeManager.jsx  # Resume management
-│   │   │   └── ResumeDownload.jsx     # Public resume download
+│   │   │   │   ├── AdminLayout.jsx
+│   │   │   │   ├── AdminSidebar.jsx
+│   │   │   │   ├── BlogManager.jsx
+│   │   │   │   ├── ContactViewer.jsx
+│   │   │   │   ├── DashboardStats.jsx
+│   │   │   │   ├── ExperienceManager.jsx
+│   │   │   │   ├── ProjectManager.jsx
+│   │   │   │   ├── ResumeManager.jsx
+│   │   │   │   ├── SkillManager.jsx
+│   │   │   │   └── TestimonialManager.jsx
+│   │   │   ├── Accessibility.jsx
+│   │   │   ├── ErrorTest.jsx
+│   │   │   ├── Hero.jsx
+│   │   │   ├── Logo.jsx
+│   │   │   ├── Navigation.jsx
+│   │   │   ├── NewsletterSignup.jsx
+│   │   │   ├── ResumeDownload.jsx
+│   │   │   └── ThemeToggle.jsx
+│   │   ├── context/        # React context providers
+│   │   │   └── ThemeContext.jsx
 │   │   ├── pages/          # Page components
-│   │   │   ├── AdminDashboard.jsx  # Dynamic admin dashboard
-│   │   │   ├── Skills.jsx          # Interactive skills page
-│   │   │   ├── Blog.jsx            # Blog with search
-│   │   │   └── Projects.jsx        # Projects with search
+│   │   │   ├── About.jsx
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── AdminLogin.jsx
+│   │   │   ├── Blog.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Projects.jsx
+│   │   │   └── Skills.jsx
 │   │   ├── utils/          # Utility functions
-│   │   │   └── auth.js     # Authentication utilities
+│   │   │   ├── auth.js     # Authentication utilities
+│   │   │   └── axios.js    # HTTP client configuration
 │   │   ├── locales/        # Translation files
-│   │   └── App.jsx         # Main app component
+│   │   │   ├── en.json     # English translations
+│   │   │   └── ml.json     # Malayalam translations
+│   │   ├── App.css         # Global styles
+│   │   ├── App.jsx         # Main app component
+│   │   ├── i18n.js         # Internationalization setup
+│   │   └── main.jsx        # App entry point
+│   ├── public/             # Static assets
+│   │   ├── favicon.ico     # Favicon
+│   │   ├── favicon.svg     # SVG favicon
+│   │   └── favicon.png     # PNG favicon
 │   ├── package.json        # Node.js dependencies
-│   └── vite.config.js      # Vite configuration
-└── README.md              # This file
+│   ├── vite.config.js      # Vite configuration
+│   ├── tailwind.config.js  # Tailwind CSS configuration
+│   ├── postcss.config.js   # PostCSS configuration
+│   └── README.md           # Frontend documentation
+└── README.md              # Main project documentation
 ```
 
 ## 🚀 Installation & Setup
@@ -192,6 +230,12 @@ The backend includes multiple requirements files for different use cases:
 - **`requirements-dev.txt`** - Development tools, testing, and code quality tools
 - **`requirements-prod.txt`** - Production-ready with additional security and performance packages
 - **`requirements.txt`** - Comprehensive list with all dependencies and comments
+
+### Latest Updates
+- **Enhanced Requirements**: Updated all requirements files with latest package versions
+- **Development Tools**: Added comprehensive development tooling (linting, testing, formatting)
+- **Production Security**: Enhanced production requirements with security and monitoring tools
+- **Performance Optimization**: Added caching and compression tools for production
 
 ### Backend Setup
 
@@ -387,6 +431,13 @@ CORS_ALLOWED_ORIGINS=http://localhost:5173
 - **Dynamic Translation**: All UI elements and content support both languages
 - **Language Persistence**: User's language preference is remembered
 - **RTL Support**: Ready for right-to-left language support
+
+### Latest UI/UX Improvements
+- **Modern Design**: Redesigned pages with glassmorphism and gradient effects
+- **Transparent Buttons**: Updated button styling with transparent backgrounds
+- **Enhanced Animations**: Improved hover effects and micro-interactions
+- **Better Typography**: Enhanced text hierarchy and readability
+- **Improved Accessibility**: Better contrast ratios and keyboard navigation
 
 ## 🤝 Contributing
 

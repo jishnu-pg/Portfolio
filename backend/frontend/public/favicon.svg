@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="black"/>
+  
+  <!-- Main blue vertical S-shaped element -->
+  <path d="M16 2 C20 6 12 10 16 14 C20 18 12 22 16 26 C20 30 12 26 16 22 C20 18 12 14 16 10 C20 6 12 2 16 6" 
+        stroke="#87CEEB" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Top-left white ribbon -->
+  <path d="M4 8 C12 8 20 12 28 8" 
+        stroke="white" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Top-right white ribbon -->
+  <path d="M4 8 C12 8 20 4 28 8" 
+        stroke="white" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Bottom-left white ribbon -->
+  <path d="M4 24 C12 24 20 28 28 24" 
+        stroke="white" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Bottom-right white ribbon -->
+  <path d="M4 24 C12 24 20 20 28 24" 
+        stroke="white" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+</svg> 
