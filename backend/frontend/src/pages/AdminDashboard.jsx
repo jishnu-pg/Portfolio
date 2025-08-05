@@ -200,12 +200,25 @@ const AdminDashboard = () => {
 
       const activities = [];
 
+      // Helper function to format date safely
+      const formatDate = (dateString) => {
+        if (!dateString) return 'Recently';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Recently';
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      };
+
       // Add recent projects
       projects.slice(0, 3).forEach(project => {
         activities.push({
           action: 'New project added',
           item: project.title,
-          time: new Date(project.created_at).toLocaleDateString(),
+          time: formatDate(project.created_at),
+          rawTime: project.created_at || new Date().toISOString(),
           icon: Code,
           color: 'blue'
         });
@@ -216,7 +229,8 @@ const AdminDashboard = () => {
         activities.push({
           action: 'Blog post published',
           item: blog.title,
-          time: new Date(blog.created_at).toLocaleDateString(),
+          time: formatDate(blog.created_at),
+          rawTime: blog.created_at || new Date().toISOString(),
           icon: FileText,
           color: 'purple'
         });
@@ -227,7 +241,8 @@ const AdminDashboard = () => {
         activities.push({
           action: 'New contact received',
           item: contact.name,
-          time: new Date(contact.created_at).toLocaleDateString(),
+          time: formatDate(contact.created_at),
+          rawTime: contact.created_at || new Date().toISOString(),
           icon: MessageSquare,
           color: 'green'
         });
@@ -238,14 +253,15 @@ const AdminDashboard = () => {
         activities.push({
           action: 'Skill updated',
           item: skill.name,
-          time: new Date(skill.created_at).toLocaleDateString(),
+          time: formatDate(skill.updated_at || skill.created_at),
+          rawTime: skill.updated_at || skill.created_at || new Date().toISOString(),
           icon: Target,
           color: 'orange'
         });
       });
 
       // Sort by date and take latest 8
-      activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+      activities.sort((a, b) => new Date(b.rawTime) - new Date(a.rawTime));
       
       setAnalyticsData(prev => ({
         ...prev,

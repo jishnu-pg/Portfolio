@@ -15,11 +15,13 @@ const TestimonialManager = ({ onLogout }) => {
     position: '',
     company: '',
     content: '',
+    image: null,
     rating: 5,
     featured: false,
     approved: false
   });
   const [confirm, setConfirm] = useState({ open: false, onConfirm: null, message: '' });
+  const [imageModal, setImageModal] = useState({ open: false, imageUrl: '', imageName: '' });
 
   useEffect(() => {
     fetchTestimonials();
@@ -50,10 +52,19 @@ const TestimonialManager = ({ onLogout }) => {
         ? `/testimonials/${editingTestimonial.id}/`
         : '/testimonials/';
       const method = editingTestimonial ? 'put' : 'post';
-      await api[method](url, formData, {
+      
+      // Create FormData for file upload
+      const submitData = new FormData();
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== null && formData[key] !== undefined) {
+          submitData.append(key, formData[key]);
+        }
+      });
+      
+      await api[method](url, submitData, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data'
         }
       });
       fetchTestimonials();
@@ -92,6 +103,7 @@ const TestimonialManager = ({ onLogout }) => {
       position: testimonial.position || '',
       company: testimonial.company || '',
       content: testimonial.content,
+      image: null, // Reset to null, existing image will be shown via testimonial.image_url
       rating: testimonial.rating,
       featured: testimonial.featured,
       approved: testimonial.approved
@@ -105,6 +117,7 @@ const TestimonialManager = ({ onLogout }) => {
       position: '',
       company: '',
       content: '',
+      image: null,
       rating: 5,
       featured: false,
       approved: false
@@ -118,6 +131,26 @@ const TestimonialManager = ({ onLogout }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : type === 'number' ? parseInt(value) : value
     }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData(prev => ({
+      ...prev,
+      image: file
+    }));
+  };
+
+  const handleImageClick = (imageUrl, imageName) => {
+    setImageModal({
+      open: true,
+      imageUrl: imageUrl,
+      imageName: imageName
+    });
+  };
+
+  const closeImageModal = () => {
+    setImageModal({ open: false, imageUrl: '', imageName: '' });
   };
 
   const renderStars = (rating) => {
@@ -258,6 +291,40 @@ const TestimonialManager = ({ onLogout }) => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Profile Image
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 dark:file:bg-gray-600 dark:file:text-gray-200"
+                      />
+                      {formData.image && (
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Selected: {formData.image.name}
+                          </p>
+                        </div>
+                      )}
+                      {editingTestimonial && editingTestimonial.image_url && !formData.image && (
+                        <div className="mt-2">
+                          <img 
+                            src={editingTestimonial.image_url} 
+                            alt="Current testimonial image" 
+                            className="w-16 h-16 object-cover rounded-full border-2 border-gray-200 dark:border-gray-600"
+                          />
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            Current image (select new file to replace)
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Rating *
                     </label>
                     <select
@@ -360,6 +427,7 @@ const TestimonialManager = ({ onLogout }) => {
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Image</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Position</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Company</th>
@@ -372,6 +440,23 @@ const TestimonialManager = ({ onLogout }) => {
                   <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {testimonials.map((testimonial) => (
                       <tr key={testimonial.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                        <td className="px-6 py-4 whitespace-nowrap text-left">
+                          {testimonial.image_url ? (
+                            <img 
+                              src={testimonial.image_url} 
+                              alt={`${testimonial.name}'s profile`} 
+                              className="w-12 h-12 object-cover rounded-full border-2 border-gray-200 dark:border-gray-600 cursor-pointer hover:border-yellow-400 transition-colors duration-200"
+                              onClick={() => handleImageClick(testimonial.image_url, testimonial.name)}
+                              title="Click to view full size"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                              <svg className="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            </div>
+                          )}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-left font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-left text-gray-700 dark:text-gray-300">{testimonial.position}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-left text-gray-700 dark:text-gray-300">{testimonial.company}</td>
@@ -412,6 +497,39 @@ const TestimonialManager = ({ onLogout }) => {
           </div>
         </div>
       </div>
+      
+      {/* Image Modal */}
+      {imageModal.open && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={closeImageModal}>
+          <div className="relative max-w-4xl max-h-[90vh] p-4">
+            <button
+              onClick={closeImageModal}
+              className="absolute top-2 right-2 text-white hover:text-gray-300 bg-black bg-opacity-50 rounded-full p-2 z-10 transition-colors"
+              title="Close"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-2xl">
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {imageModal.imageName}'s Profile Image
+                </h3>
+              </div>
+              <div className="p-4 flex justify-center">
+                <img
+                  src={imageModal.imageUrl}
+                  alt={`${imageModal.imageName}'s profile`}
+                  className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <ConfirmDeleteModal
         open={confirm.open}
         onClose={() => setConfirm((prev) => ({ ...prev, open: false }))}

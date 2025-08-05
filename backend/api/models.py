@@ -80,8 +80,10 @@ class Testimonial(models.Model):
     position = models.CharField(max_length=200, blank=True)
     company = models.CharField(max_length=200, blank=True)
     content = models.TextField()
+    image = models.ImageField(upload_to='testimonials/', blank=True, null=True, help_text="Profile image of the person giving testimonial")
     rating = models.IntegerField(choices=[(i, f'{i} stars') for i in range(1, 6)], default=5)
     featured = models.BooleanField(default=False, help_text="Mark as featured testimonial")
+    approved = models.BooleanField(default=False, help_text="Mark as approved testimonial")
     order = models.IntegerField(default=0, help_text="Display order (lower numbers first)")
     created_at = models.DateTimeField(auto_now_add=True)
     

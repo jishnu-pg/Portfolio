@@ -94,62 +94,23 @@ const ResumeDownload = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+    <motion.button
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={handleDownload}
+      disabled={downloading}
+      className="flex items-center justify-center gap-3 bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border-2 border-white/30 dark:border-gray-700/30 text-gray-900 dark:text-gray-100 px-8 py-4 rounded-2xl hover:bg-white/30 dark:hover:bg-gray-800/30 transition-all duration-300 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0">
-          <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-            <FileText className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-          </div>
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              {resume.title}
-            </h3>
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Latest
-            </span>
-          </div>
-          
-          {resume.description && (
-            <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
-              {resume.description}
-            </p>
-          )}
-          
-          <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
-            <span className="flex items-center">
-              <File className="w-4 h-4 mr-1" />
-              {resume.file_extension} • {resume.file_size}
-            </span>
-            <span className="flex items-center">
-              <Calendar className="w-4 h-4 mr-1" />
-              Updated {new Date(resume.updated_at).toLocaleDateString()}
-            </span>
-          </div>
-          
-          <button
-            onClick={handleDownload}
-            disabled={downloading}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 w-full justify-center"
-          >
-            {downloading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-            ) : (
-              <Download className="w-4 h-4 mr-2" />
-            )}
-            {downloading ? 'Downloading...' : 'Download Resume'}
-          </button>
-        </div>
-      </div>
-    </motion.div>
+      {downloading ? (
+        <div className="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent"></div>
+      ) : (
+        <Download className="w-5 h-5" />
+      )}
+      <span>{downloading ? 'Downloading...' : 'Resume'}</span>
+    </motion.button>
   );
 };
 
-export default ResumeDownload; 
+export default ResumeDownload;

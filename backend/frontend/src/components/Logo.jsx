@@ -6,7 +6,7 @@ const Logo = ({ className = "" }) => {
               <span 
           className="bg-gradient-to-r from-blue-500 via-blue-400 to-purple-600 bg-clip-text text-transparent"
         >
-          Jishnu
+          {/* Jishnu */}
         </span>
     </div>
   );

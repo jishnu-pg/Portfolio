@@ -76,10 +76,10 @@ const Skills = () => {
       const skillsArray = Array.isArray(data) ? data : data.results || [];
       const transformedSkills = skillsArray.map(skill => ({
         name: skill.name,
-        level: typeof skill.proficiency_level === 'number' ? skill.proficiency_level : 80,
+        level: typeof skill.proficiency === 'number' ? skill.proficiency : 80,
         category: skill.category?.toLowerCase() || 'tools',
-        icon: '\ud83c\udfaf',
-        color: getRandomColor()
+        icon: skill.icon || '🎯',
+        color: getSkillColor(skill.category) || getRandomColor()
       }));
       setSkills(transformedSkills);
     } catch (error) {
@@ -89,6 +89,18 @@ const Skills = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getSkillColor = (category) => {
+    const colorMap = {
+      'frontend': '#3B82F6', // Blue
+      'backend': '#10B981',  // Green
+      'database': '#F59E0B', // Orange
+      'devops': '#8B5CF6',   // Purple
+      'other': '#06B6D4',    // Cyan
+      'tools': '#EF4444'     // Red
+    };
+    return colorMap[category?.toLowerCase()] || '#6B7280'; // Default gray
   };
 
   const getRandomColor = () => {

@@ -70,9 +70,22 @@ class ExperienceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TestimonialSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    
     class Meta:
         model = Testimonial
         fields = '__all__'
+    
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request and hasattr(request, 'build_absolute_uri'):
+                try:
+                    return request.build_absolute_uri(obj.image.url)
+                except:
+                    pass
+            return f"http://127.0.0.1:8000{settings.MEDIA_URL}{obj.image}"
+        return None
 
 class ContactSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
